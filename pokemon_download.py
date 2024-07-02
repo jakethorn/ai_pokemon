@@ -77,14 +77,14 @@ def download_pokemon_sprites(orientation: Orientation = Orientation.FRONT,
     with open(full_pokemon_data_path) as f:
         pokemons_full = json.load(f)
 
-    url_path = get_sprite_path(orientation, gender, shiny, game)
-    dir_path = Path(f"data/{"/".join(url_path)}/")
+    sprite_path = get_sprite_path(orientation, gender, shiny, game)
+    dir_path = Path(f"data/{"/".join(sprite_path)}/")
     dir_path.mkdir(parents=True, exist_ok=True)
     print(f"Downloading data to {dir_path}...")
 
     for pokemon in pokemons_full:
-        url, _ = try_search_dict(pokemon, url_path)
-        if not url:
+        sprite_url, _ = try_search_dict(pokemon, sprite_path)
+        if not sprite_url:
             print(f"No sprite URL provided for {pokemon["name"]}.")
             continue
         file_path = dir_path / f"{pokemon["id"]}.png"
@@ -92,7 +92,7 @@ def download_pokemon_sprites(orientation: Orientation = Orientation.FRONT,
             print(f"Sprite for {pokemon["name"]} already downloaded.")
             continue
         time.sleep(1)
-        response = requests.get(url)
+        response = requests.get(sprite_url)
         if response.status_code == 200:
             with open(file_path, "wb") as f:
                 f.write(response.content)
